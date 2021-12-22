@@ -5,6 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
+random.seed(10)
+
 #loading dataFrames of empirical data for all years for all countries
 LT_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL', 'metadata','LT_db.csv'), index_col=0)
 MT_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL','metadata','MT_db.csv'), index_col=0)
@@ -16,7 +18,7 @@ years = len(LT_df.columns)
 
 #initializing all global variables
 #initializing variable that counts the state periods
-epochs = 32
+epochs = 40
 number_of_agents = 3
 
 #not used! for graphical purposes; showing the action space in the first row of the Q-table
@@ -119,6 +121,7 @@ for epoch in range(1, epochs + 1):
     cumulative_reward = 0  #intially 0
 
     alpha = 0.1  #learning rate
+    sigma = 2
     
     #exploration vs explotation
     LT_epsilon = 0.9
@@ -139,7 +142,8 @@ for epoch in range(1, epochs + 1):
 
         #calculate immediate consequences of your actions (we want the smallest possible reward, i.e. co2 emission)
         LT_immediate_reward = LT_action * (LT_reward_factor + cost_of_action)
-        
+        LT_immediate_reward = np.random.normal(LT_immediate_reward, sigma, 1)[0]
+
         #calculate Q-value
         Q_LT[year, abs(LT_action_space - LT_action).argmin()] = round( #in the Q-table in the position of the [year, the position of the selected action in the action space]
             (1 - alpha) * Q_LT[year, Min_Q_LT] + alpha *
@@ -152,6 +156,7 @@ for epoch in range(1, epochs + 1):
             MT_action = MT_action_space[Min_Q_MT]
 
         MT_immediate_reward = MT_action * (MT_reward_factor + cost_of_action)
+        MT_immediate_reward = np.random.normal(MT_immediate_reward, sigma, 1)[0]
         
         Q_MT[year, abs(MT_action_space - MT_action).argmin()] = round(
             (1 - alpha) * Q_MT[year, Min_Q_MT] + alpha *
@@ -164,7 +169,8 @@ for epoch in range(1, epochs + 1):
             ST_action = ST_action_space[Min_Q_ST]
 
         ST_immediate_reward = ST_action * (ST_reward_factor + cost_of_action)
-        
+        ST_immediate_reward = np.random.normal(ST_immediate_reward, sigma, 1)[0]
+
         Q_ST[year, abs(ST_action_space - ST_action).argmin()] = round(
             (1 - alpha) * Q_ST[year, Min_Q_ST] + alpha *
             (ST_immediate_reward + gamma * np.amin(Q_ST[year + 1, :])), 3)
