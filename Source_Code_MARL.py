@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
 #loading dataFrames of empirical data for all years for all countries
-LT_df = pd.read_csv(os.path.join('metadata','LT_db.csv'), index_col=0)
-MT_df = pd.read_csv(os.path.join('metadata','MT_db.csv'), index_col=0)
-ST_df = pd.read_csv(os.path.join('metadata','ST_db.csv'), index_col=0)
+LT_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL', 'metadata','LT_db.csv'), index_col=0)
+MT_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL','metadata','MT_db.csv'), index_col=0)
+ST_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL','metadata','ST_db.csv'), index_col=0)
 
 years_array=np.arange(int(LT_df.columns[0])-1,int(LT_df.columns[-1])+1) #an array of all years, which has empirical data 
 global_trend_Real = [4.025, 4.074, 4.124, 4.152, 4.227, 4.224, 4.194, 4.173, 4.068, 4.002,4.011, 4.036, 4.071, 4.082, 4.05, 3.968, 4.038, 4.081, 4.088, 4.258, 4.414,  4.528, 4.636, 4.671, 4.762, 4.662, 4.835, 4.975, 5.005, 4.998, 4.981] #Source World Bank. 
@@ -206,6 +206,7 @@ for epoch in range(1, epochs + 1):
     immediate_rewards_per_epoch.append(
         [LT_immediate_reward, MT_immediate_reward, ST_immediate_reward])
     global_state_per_epoch.append(global_state_of_co2_emission)
+    
 
 #convert to array
 immediate_rewards_per_epoch = np.array(immediate_rewards_per_epoch, copy=False)
@@ -277,23 +278,20 @@ def get_trend(Q_LT,Q_MT,Q_ST):
         global_trend.append(np.round(global_state_of_co2_emission,3))
     return global_trend
 
-#get global trens from differnet policies
+#get global trends from differnet policies
 global_trend_Greedy = get_trend(LT_Greedy,MT_Greedy,ST_Greedy)
-global_trend_Selfish = get_trend(Q_LT_Immediate_Best,Q_MT_Immediate_Best,Q_ST_Immediate_Best)
-global_trend_Synergistic = get_trend(Q_LT_Best,Q_MT_Best,Q_ST_Best)
+global_trend_Selfish = get_trend(LT_Selfish_Plan,MT_Selfish_Plan,ST_Selfish_Plan)
+global_trend_Synergistic = get_trend(LT_Synergistic,MT_Synergistic,ST_Synergistic)
 
 
 #ALL Policies
 plt.figure(figsize=(10,8))
 plt.plot(years_array,global_trend_Greedy)
-plt.scatter(years_array,global_trend_Greedy)
 plt.plot(years_array,global_trend_Selfish)
-plt.scatter(years_array,global_trend_Selfish)
 plt.plot(years_array,global_trend_Synergistic)
-plt.scatter(years_array,global_trend_Synergistic)
 plt.plot(years_array,global_trend_Real)
-plt.scatter(years_array,global_trend_Real)
 plt.xlabel('Years')
 plt.ylabel('CO2 Emission')
 plt.legend(['Greedy','Selfish','Synergistic','Real'])
 plt.show()
+
