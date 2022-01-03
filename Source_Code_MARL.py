@@ -44,9 +44,9 @@ Q_MT_per_epoch = []
 Q_ST_per_epoch = []
 
 #defining the weight factors of immediate rewards 
-LT_reward_factor = 0.4
-MT_reward_factor = 0.5
-ST_reward_factor = 0.6 
+#LT_reward_factor = 0.4
+#MT_reward_factor = 0.5
+#ST_reward_factor = 0.6 
 #cumulative_reward = 0 #initializing cumulative reward, which is 0 to start with
 
 #creating a list to store the cumulative reward for each epoch
@@ -121,7 +121,7 @@ for epoch in range(1, epochs + 1):
     cumulative_reward = 0  #intially 0
 
     alpha = 0.1  #learning rate
-    sigma = 2
+    sigma = 0.2
     
     #exploration vs explotation
     LT_epsilon = 0.9
@@ -129,6 +129,10 @@ for epoch in range(1, epochs + 1):
     ST_epsilon = 0.7
 
     for year in range(0, years):
+        #defining the weight factors of immediate rewards 
+        LT_reward_factor = np.random.normal(0.7, sigma, 1)[0] 
+        MT_reward_factor = np.random.normal(0.8, sigma, 1)[0] 
+        ST_reward_factor = np.random.normal(0.9, sigma, 1)[0]  
 
         Min_Q_LT = np.argmin(Q_LT[year]) #find the position of the lowest Q-value for a given year
         Min_Q_MT = np.argmin(Q_MT[year])
@@ -142,7 +146,7 @@ for epoch in range(1, epochs + 1):
 
         #calculate immediate consequences of your actions (we want the smallest possible reward, i.e. co2 emission)
         LT_immediate_reward = LT_action * (LT_reward_factor + cost_of_action)
-        LT_immediate_reward = np.random.normal(LT_immediate_reward, sigma, 1)[0]
+        #LT_immediate_reward = np.random.normal(LT_immediate_reward, sigma, 1)[0]
 
         #calculate Q-value
         Q_LT[year, abs(LT_action_space - LT_action).argmin()] = round( #in the Q-table in the position of the [year, the position of the selected action in the action space]
