@@ -187,7 +187,7 @@ plt.xlabel('Years')
 plt.ylabel('CO2 Emission')
 plt.legend(['Greedy','Selfish','Synergistic','Real'])
 plt.title("Certain environment")
-plt.savefig('environment_certain.png')
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/environment_certain.png')
 #plt.show()
 
 #ALL Policies uncertain
@@ -212,7 +212,7 @@ plt.xlabel('Years')
 plt.ylabel('CO2 Emission')
 plt.legend(['Greedy','Selfish','Synergistic','Real'])
 plt.title("Uncertain environment")
-plt.savefig('environment_uncertain.png')
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/environment_uncertain.png')
 
 #Mean of uncertainty and certainty
 data = np.array([global_trend_Greedy, global_trend_Selfish, global_trend_Synergistic])
@@ -244,7 +244,7 @@ plt.xlabel('Years')
 plt.ylabel('CO2 Emission')
 plt.legend(['Uncertain (average)', 'Certain (average)','Real'])
 plt.title("Comparison of conditions")
-plt.savefig('comparison_of_conditions.png')
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/comparison_of_conditions.png')
 
 ##Certain learning
 #plotting average Q-value over epochs
@@ -260,7 +260,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Average Q-value')
 plt.legend(['Average Q-values for LT', 'Average Q-values for MT','Average Q-values for ST'])
 plt.title("Learning over epochs, Certain environment")
-plt.savefig('learning_over_epochs_certain.png')
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/learning_over_epochs_certain.png')
 
 ##Certain learning
 #plotting average Q-value over epochs
@@ -276,4 +276,4 @@ plt.xlabel('Epochs')
 plt.ylabel('Average Q-value')
 plt.legend(['Average Q-values for LT', 'Average Q-values for MT','Average Q-values for ST'])
 plt.title("Learning over epochs, Uncertain environment")
-plt.savefig('learning_over_epochs_uncertain.png')
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/learning_over_epochs_uncertain.png')
