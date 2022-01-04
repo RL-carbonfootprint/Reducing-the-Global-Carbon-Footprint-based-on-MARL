@@ -305,3 +305,14 @@ plt.ylabel('CO2 Emission')
 plt.legend(['Greedy','Selfish','Synergistic','Real'])
 plt.show()
 
+#Mean of uncertainty
+data = np.array([global_trend_Greedy, global_trend_Selfish, global_trend_Synergistic])
+all_policies_uncertain = np.average(data, axis=0)
+
+plt.figure(figsize=(10,8))
+plt.plot(years_array,all_policies_uncertain)
+plt.plot(years_array,global_trend_Real)
+plt.xlabel('Years')
+plt.ylabel('CO2 Emission')
+plt.legend(['Uncertain (average)','Real'])
+plt.show()
