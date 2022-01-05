@@ -112,7 +112,7 @@ def RL_loop(condition):
         cumulative_reward = 0  #intially 0
 
         alpha = 0.1  #learning rate
-        sigma = 0.2
+        sigma = 0.25
         
         #exploration vs explotation
         LT_epsilon = 0.9
