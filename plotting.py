@@ -10,7 +10,7 @@ plt.style.use('seaborn')
 
 
 #evaluate RL across several runs with 40 learning epochs
-test_runs = 5
+test_runs = 1000
 LT_Greedy_list,MT_Greedy_list,ST_Greedy_list, LT_Selfish_Plan_list,MT_Selfish_Plan_list,ST_Selfish_Plan_list, LT_Synergistic_list,MT_Synergistic_list,ST_Synergistic_list, Q_LT_average_list, Q_MT_average_list, Q_ST_average_list = [],[],[],[],[],[],[],[],[],[],[],[]
 LT_Greedy_u_list,MT_Greedy_u_list,ST_Greedy_u_list, LT_Selfish_Plan_u_list,MT_Selfish_Plan_u_list,ST_Selfish_Plan_u_list, LT_Synergistic_u_list,MT_Synergistic_u_list,ST_Synergistic_u_list, Q_LT_average_u_list, Q_MT_average_u_list, Q_ST_average_u_list = [],[],[],[],[],[],[],[],[],[],[],[]
 
@@ -81,6 +81,31 @@ ST_Synergistic_u_mean = np.average(ST_Synergistic_u_list, axis=0)
 LT_Greedy_std = np.std(LT_Greedy_list, axis=0)
 MT_Greedy_std = np.std(MT_Greedy_list, axis=0)
 ST_Greedy_std = np.std(ST_Greedy_list, axis=0)
+
+#calculate std for policies
+#greedy = np.array([LT_Greedy_list[0][0:len(LT_Greedy_list)],MT_Greedy_list[0][0:len(MT_Greedy_list)], ST_Greedy_list[0][0:len(ST_Greedy_list)]])
+#print("greeeeeeeeeeeeeeeed", greedy)
+#global_trend_Greedy_std = np.std(greedy, axis=0)
+#print("greedy certain std:", global_trend_Greedy_std)
+#u_greedy = np.array([LT_Greedy_u_list,MT_Greedy_u_list, ST_Greedy_u_list])
+#global_trend_Greedy_u_std = np.std(u_greedy, axis=0)
+#print("greedy uncertain std:", global_trend_Greedy_u_std)
+
+#selfish = np.array([LT_Selfish_Plan_list,MT_Selfish_Plan_list, ST_Selfish_Plan_list])
+#global_trend_Selfish_std = np.std(selfish, axis=0)
+#print("selfish certain std:", global_trend_Selfish_std)
+#u_selfish = np.array([LT_Selfish_Plan_u_list,MT_Selfish_Plan_u_list, ST_Selfish_Plan_u_list])
+#global_trend_Selfish_u_std = np.std(u_selfish, axis=0)
+#print("selfish uncertain std:", global_trend_Selfish_u_std)
+
+#util = np.array([LT_Synergistic_list,MT_Synergistic_list, ST_Synergistic_list])
+#global_trend_Synergistic_std = np.std(util, axis=0)
+#print("util certain std:", global_trend_Synergistic_std)
+#u_util = np.array([LT_Synergistic_u_list,MT_Synergistic_u_list, ST_Synergistic_u_list])
+#global_trend_Synergistic_u_std = np.std(u_util, axis=0)
+#print("util uncertain std:", global_trend_Synergistic_u_std)
+
+
 LT_Selfish_Plan_std = np.std(LT_Selfish_Plan_list, axis=0)
 MT_Selfish_Plan_std = np.std(MT_Selfish_Plan_list, axis=0)
 ST_Selfish_Plan_std = np.std(ST_Selfish_Plan_list, axis=0)
@@ -98,7 +123,6 @@ LT_Synergistic_u_std = np.std(LT_Synergistic_u_list, axis=0)
 MT_Synergistic_u_std = np.std(MT_Synergistic_u_list, axis=0)
 ST_Synergistic_u_std = np.std(ST_Synergistic_u_list, axis=0)
 
-
 #average std across agents
 data = np.array([LT_Greedy_std, MT_Greedy_std, ST_Greedy_std])
 global_trend_Greedy_std = np.average(data, axis=0)
@@ -107,12 +131,13 @@ global_trend_Selfish_std = np.average(data, axis=0)
 data = np.array([LT_Synergistic_std,MT_Synergistic_std,ST_Synergistic_std])
 global_trend_Synergistic_std = np.average(data, axis=0)
 
-data = np.array([LT_Greedy_std, MT_Greedy_std, ST_Greedy_std])
+data = np.array([LT_Greedy_u_std, MT_Greedy_u_std, ST_Greedy_u_std])
 global_trend_Greedy_u_std = np.average(data, axis=0)
 data = np.array([LT_Selfish_Plan_u_std,MT_Selfish_Plan_u_std,ST_Selfish_Plan_u_std])
 global_trend_Selfish_u_std = np.average(data, axis=0)
 data = np.array([LT_Synergistic_u_std,MT_Synergistic_u_std,ST_Synergistic_u_std,])
 global_trend_Synergistic_u_std = np.average(data, axis=0)
+
 
 #Uncertainty: find sd between policies across agents and runs
 Greedy_u_data = np.array([LT_Greedy_u_mean, ST_Greedy_u_mean, MT_Greedy_u_mean])
@@ -121,6 +146,7 @@ Synergistic_u_data = np.array([LT_Synergistic_u_mean, ST_Synergistic_u_mean, MT_
 
 ##calculate sd
 all_policies_uncertainty_std = np.std([np.average(Greedy_u_data, axis = 0), np.insert(np.average(Selfish_u_data, axis = 0), 0, 0), np.insert(np.average(Synergistic_u_data, axis = 0), 0, 0)], axis = 0)
+print("all_policies_uncertainty_std", all_policies_uncertainty_std)
 
 #Certainty: find sd between policies across agents and runs
 Greedy_data = np.array([LT_Greedy_mean, ST_Greedy_mean, MT_Greedy_mean])
@@ -129,6 +155,8 @@ Synergistic_data = np.array([LT_Synergistic_mean, ST_Synergistic_mean, MT_Synerg
 
 ##calculate sd
 all_policies_certainty_std = np.std([np.average(Greedy_data, axis = 0), np.insert(np.average(Selfish_data, axis = 0), 0, 0), np.insert(np.average(Synergistic_data, axis = 0), 0, 0)], axis = 0)
+print("all_policies_certainty_std", all_policies_certainty_std)
+
 
 #save population arrays
 Population_LT, Population_ST, Population_MT, Population_array, _,_,_, _,_,_, _,_,_, _,_,_, = evaluate_RL('uncertain')
@@ -164,10 +192,21 @@ global_trend_Greedy = get_trend(LT_Greedy_mean,MT_Greedy_mean,ST_Greedy_mean)
 global_trend_Selfish = get_trend(LT_Selfish_Plan_mean,MT_Selfish_Plan_mean,ST_Selfish_Plan_mean)
 global_trend_Synergistic = get_trend(LT_Synergistic_mean,MT_Synergistic_mean,ST_Synergistic_mean)
 
+#SD
+print("greedy certain std:", global_trend_Greedy_std[-1])
+print("gre", global_trend_Greedy_std)
+print("selfish certain std:", global_trend_Selfish_std[-1])
+print("util certain std:", global_trend_Synergistic_std[-1])
+
+print("greedy uncertain std:", global_trend_Greedy_u_std[-1])
+print("selfish ununcertain std:", global_trend_Selfish_u_std[-1])
+print("util uncertain std:", global_trend_Synergistic_std[-1])
+
+
+#mean
 print("certain greedy:", global_trend_Greedy[-1])
 print("certain selfish:", global_trend_Selfish[-1])
 print("certain util:", global_trend_Synergistic[-1])
-
 
 global_trend_Greedy_u = get_trend(LT_Greedy_u_mean,MT_Greedy_u_mean,ST_Greedy_u_mean)
 global_trend_Selfish_u = get_trend(LT_Selfish_Plan_u_mean,MT_Selfish_Plan_u_mean,ST_Selfish_Plan_u_mean)
@@ -208,9 +247,10 @@ plt.plot(years_array,global_trend_Selfish)
 plt.plot(years_array,global_trend_Synergistic)
 plt.plot(years_array,global_trend_Real)
 
-std_upper_synergistic, std_lower_synergistic = global_trend_Synergistic+np.insert(global_trend_Synergistic_std, 0, 0), global_trend_Synergistic-np.insert(global_trend_Synergistic_std, 0, 0)
-std_upper_selfish, std_lower_selfish = global_trend_Selfish+np.insert(global_trend_Selfish_std, 0, 0), global_trend_Selfish-np.insert(global_trend_Selfish_std, 0, 0)
-std_upper_greedy, std_lower_greedy = global_trend_Greedy+global_trend_Greedy_std, global_trend_Greedy-global_trend_Greedy_std
+std_upper_synergistic, std_lower_synergistic = global_trend_Synergistic+(np.insert(global_trend_Synergistic_std, 0, 0)*2), global_trend_Synergistic-(np.insert(global_trend_Synergistic_std, 0, 0)*2)
+std_upper_selfish, std_lower_selfish = global_trend_Selfish+(np.insert(global_trend_Selfish_std, 0, 0)*2), global_trend_Selfish-(np.insert(global_trend_Selfish_std, 0, 0)*2)
+std_upper_greedy, std_lower_greedy = global_trend_Greedy+(global_trend_Greedy_std*2), global_trend_Greedy-(global_trend_Greedy_std*2)
+
 
 plt.fill_between(years_array,std_upper_synergistic, std_lower_synergistic,
                  color='gray', alpha=0.2)
@@ -234,9 +274,9 @@ plt.plot(years_array,global_trend_Selfish_u)
 plt.plot(years_array,global_trend_Synergistic_u)
 plt.plot(years_array,global_trend_Real)
 
-std_upper_u_synergistic, std_lower_u_synergistic = global_trend_Synergistic_u+np.insert(global_trend_Synergistic_u_std, 0, 0), global_trend_Synergistic_u-np.insert(global_trend_Synergistic_u_std, 0, 0)
-std_upper_u_selfish, std_lower_u_selfish = global_trend_Selfish_u+np.insert(global_trend_Selfish_u_std, 0, 0), global_trend_Selfish_u-np.insert(global_trend_Selfish_u_std, 0, 0)
-std_upper_u_greedy, std_lower_u_greedy = global_trend_Greedy_u+global_trend_Greedy_u_std, global_trend_Greedy_u-global_trend_Greedy_u_std
+std_upper_u_synergistic, std_lower_u_synergistic = global_trend_Synergistic_u+(np.insert(global_trend_Synergistic_u_std, 0, 0)*2), global_trend_Synergistic_u-(np.insert(global_trend_Synergistic_u_std, 0, 0)*2)
+std_upper_u_selfish, std_lower_u_selfish = global_trend_Selfish_u+(np.insert(global_trend_Selfish_u_std, 0, 0)*2), global_trend_Selfish_u-(np.insert(global_trend_Selfish_u_std, 0, 0)*2)
+std_upper_u_greedy, std_lower_u_greedy = global_trend_Greedy_u+(global_trend_Greedy_u_std*2), global_trend_Greedy_u-(global_trend_Greedy_u_std*2)
 
 plt.fill_between(years_array,std_upper_u_synergistic, std_lower_u_synergistic,
                  color='gray', alpha=0.2)
@@ -287,7 +327,7 @@ plt.fill_between(years_array,std_upper_certain, std_lower_certain,
 #add legends
 plt.xlabel('Years', fontsize=17)
 plt.ylabel('CO2 Emission', fontsize=17)
-plt.legend(['Uncertain (average)', 'Certain (average)','Real'], fontsize=15)
+plt.legend(['Uncertain (average)', 'Certain (average)','Empirical data'], fontsize=15)
 plt.title("Comparison of conditions", fontsize=20)
 plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/comparison_of_conditions.png')
 
@@ -295,7 +335,7 @@ plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/comparison
 #plotting average Q-value over epochs
 plt.figure(figsize=(10,8))
 epochs = range(0,len(Q_LT_average_mean))
-plt.axis([0, 40, 0, 0.025])
+plt.axis([0, 40, 0, 0.003])
 plt.plot(epochs, Q_LT_average_mean)
 plt.plot(epochs, Q_MT_average_mean)
 plt.plot(epochs, Q_ST_average_mean)
@@ -314,7 +354,7 @@ epochs = range(0,len(Q_LT_average_mean))
 plt.plot(epochs, Q_LT_average_u_mean)
 plt.plot(epochs, Q_MT_average_u_mean)
 plt.plot(epochs, Q_ST_average_u_mean)
-plt.axis([0, 40, 0, 0.025])
+plt.axis([0, 40, 0, 0.003])
 
 #add legends
 plt.xlabel('Epochs', fontsize=17)

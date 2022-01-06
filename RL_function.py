@@ -5,8 +5,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
+def rand_skew_norm(fAlpha, fLocation, fScale):
+    sigma = fAlpha / np.sqrt(1.0 + fAlpha**2) 
+
+    afRN = np.random.randn(2)
+    u0 = afRN[0]
+    v = afRN[1]
+    u1 = sigma*u0 + np.sqrt(1.0 -sigma**2) * v 
+
+    if u0 >= 0:
+        return u1*fScale + fLocation 
+    return (-u1)*fScale + fLocation 
+
+def randn_skew(N, skew):
+    return [rand_skew_norm(4, skew, 0.025) for x in range(N)]
+
+
 def RL_loop(condition):
-    random.seed(10)
+    #random.seed(10)
 
     #loading dataFrames of empirical data for all years for all countries
     LT_df = pd.read_csv(os.path.join('Reducing-the-Global-Carbon-Footprint-based-on-MARL', 'metadata','LT_db.csv'), index_col=0)
@@ -23,7 +39,7 @@ def RL_loop(condition):
 
     #number of different actions that a single agent can take in a given state
     size_of_action_space = 10
-    cost_of_action = 10 #defining cost to reduce CO2 emissions per metric ton
+    cost_of_action = 0.1 #defining cost to reduce CO2 emissions per metric ton
 
     #Q-tables
     Q_LT = np.zeros((years + 1, size_of_action_space))
@@ -41,11 +57,11 @@ def RL_loop(condition):
     #creating a list to store the immediate rewards for each epoch
     immediate_rewards_per_epoch = []
 
-    if condition == 'certain':
+    #if condition == 'certain':
         #defining the weight factors of immediate rewards 
-        LT_reward_factor = 0.4
-        MT_reward_factor = 0.5
-        ST_reward_factor = 0.6 
+    LT_reward_factor = 0.7
+    MT_reward_factor = 0.8
+    ST_reward_factor = 0.9 
 
     LT_epsilon_min = 0.1 #defining minimal epsilon for LT
     LT_epsilon_decay = 0.999 #defining decay rate of LT's epsilon
@@ -112,7 +128,7 @@ def RL_loop(condition):
         cumulative_reward = 0  #intially 0
 
         alpha = 0.1  #learning rate
-        sigma = 0.25
+        #sigma = 0.25
         
         #exploration vs explotation
         LT_epsilon = 0.9
@@ -120,12 +136,15 @@ def RL_loop(condition):
         ST_epsilon = 0.7
 
         for year in range(0, years):
-            if condition == 'uncertain':
+            #if condition == 'uncertain':
                 #defining the weight factors of immediate rewards 
-                LT_reward_factor = np.random.normal(0.7, sigma, 1)[0] 
-                MT_reward_factor = np.random.normal(0.8, sigma, 1)[0] 
-                ST_reward_factor = np.random.normal(0.9, sigma, 1)[0]  
-
+                #LT_reward_factor = np.random.normal(0.7, sigma, 1)[0] 
+                #MT_reward_factor = np.random.normal(0.8, sigma, 1)[0] 
+                #ST_reward_factor = np.random.normal(0.9, sigma, 1)[0]  
+                #LT_reward_factor = np.random.choice(randn_skew(100, 0.7), size=1)[0]
+                #MT_reward_factor = np.random.choice(randn_skew(100, 0.8), size=1)[0]
+                #ST_reward_factor = np.random.choice(randn_skew(100, 0.9), size=1)[0]
+                
             Min_Q_LT = np.argmin(Q_LT[year]) #find the position of the lowest Q-value for a given year
             Min_Q_MT = np.argmin(Q_MT[year])
             Min_Q_ST = np.argmin(Q_ST[year])
@@ -137,9 +156,11 @@ def RL_loop(condition):
                 LT_action = LT_action_space[Min_Q_LT] #if epsilon is smaller than random value, then choose the best action from the Q-table (the greedy choice)
 
             #calculate immediate consequences of your actions (we want the smallest possible reward, i.e. co2 emission)
-            LT_immediate_reward = LT_action * (LT_reward_factor + cost_of_action)
+            LT_immediate_reward = LT_action * (LT_reward_factor - cost_of_action)
             #LT_immediate_reward = np.random.normal(LT_immediate_reward, sigma, 1)[0]
-
+            if condition == 'uncertain':
+                LT_immediate_reward = np.random.choice(randn_skew(100, LT_immediate_reward), size=1)[0]
+            
             #calculate Q-value
             Q_LT[year, abs(LT_action_space - LT_action).argmin()] = round( #in the Q-table in the position of the [year, the position of the selected action in the action space]
                 (1 - alpha) * Q_LT[year, Min_Q_LT] + alpha *
@@ -151,8 +172,10 @@ def RL_loop(condition):
             else:
                 MT_action = MT_action_space[Min_Q_MT]
 
-            MT_immediate_reward = MT_action * (MT_reward_factor + cost_of_action)
-            MT_immediate_reward = np.random.normal(MT_immediate_reward, sigma, 1)[0]
+            MT_immediate_reward = MT_action * (MT_reward_factor - cost_of_action)
+            #MT_immediate_reward = np.random.normal(MT_immediate_reward, sigma, 1)[0]
+            if condition == 'uncertain':
+                MT_immediate_reward = np.random.choice(randn_skew(100, MT_immediate_reward), size=1)[0]
             
             Q_MT[year, abs(MT_action_space - MT_action).argmin()] = round(
                 (1 - alpha) * Q_MT[year, Min_Q_MT] + alpha *
@@ -164,8 +187,10 @@ def RL_loop(condition):
             else:
                 ST_action = ST_action_space[Min_Q_ST]
 
-            ST_immediate_reward = ST_action * (ST_reward_factor + cost_of_action)
-            ST_immediate_reward = np.random.normal(ST_immediate_reward, sigma, 1)[0]
+            ST_immediate_reward = ST_action * (ST_reward_factor - cost_of_action)
+            #ST_immediate_reward = np.random.normal(ST_immediate_reward, sigma, 1)[0]
+            if condition == 'uncertain':
+                ST_immediate_reward = np.random.choice(randn_skew(100, ST_immediate_reward), size=1)[0]
 
             Q_ST[year, abs(ST_action_space - ST_action).argmin()] = round(
                 (1 - alpha) * Q_ST[year, Min_Q_ST] + alpha *
