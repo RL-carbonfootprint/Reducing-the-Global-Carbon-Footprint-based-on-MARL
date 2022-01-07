@@ -10,12 +10,13 @@ plt.style.use('seaborn')
 
 
 #evaluate RL across several runs with 40 learning epochs
-test_runs = 1000
+test_runs = 10
 LT_Greedy_list,MT_Greedy_list,ST_Greedy_list, LT_Selfish_Plan_list,MT_Selfish_Plan_list,ST_Selfish_Plan_list, LT_Synergistic_list,MT_Synergistic_list,ST_Synergistic_list, Q_LT_average_list, Q_MT_average_list, Q_ST_average_list = [],[],[],[],[],[],[],[],[],[],[],[]
 LT_Greedy_u_list,MT_Greedy_u_list,ST_Greedy_u_list, LT_Selfish_Plan_u_list,MT_Selfish_Plan_u_list,ST_Selfish_Plan_u_list, LT_Synergistic_u_list,MT_Synergistic_u_list,ST_Synergistic_u_list, Q_LT_average_u_list, Q_MT_average_u_list, Q_ST_average_u_list = [],[],[],[],[],[],[],[],[],[],[],[]
 
 
 for i in range(0, test_runs): 
+    print(i)
     #save certain runs
     _, _, _, _, LT_Greedy, MT_Greedy,ST_Greedy, LT_Selfish_Plan,MT_Selfish_Plan,ST_Selfish_Plan, LT_Synergistic,MT_Synergistic,ST_Synergistic, Q_LT_average, Q_MT_average, Q_ST_average = evaluate_RL('certain')
     LT_Greedy_list.append(LT_Greedy)
@@ -231,6 +232,7 @@ plt.show()
 plt.hist(global_trend_Synergistic)
 plt.show()
 '''
+
 t_test_greedy = stats.ttest_ind(global_trend_Greedy, global_trend_Greedy_u)
 print("t-test greedy", t_test_greedy)
 
