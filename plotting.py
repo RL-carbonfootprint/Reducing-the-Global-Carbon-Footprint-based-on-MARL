@@ -10,7 +10,7 @@ plt.style.use('seaborn')
 
 
 #evaluate RL across several runs with 40 learning epochs
-test_runs = 10
+test_runs = 1000
 LT_Greedy_list,MT_Greedy_list,ST_Greedy_list, LT_Selfish_Plan_list,MT_Selfish_Plan_list,ST_Selfish_Plan_list, LT_Synergistic_list,MT_Synergistic_list,ST_Synergistic_list, Q_LT_average_list, Q_MT_average_list, Q_ST_average_list = [],[],[],[],[],[],[],[],[],[],[],[]
 LT_Greedy_u_list,MT_Greedy_u_list,ST_Greedy_u_list, LT_Selfish_Plan_u_list,MT_Selfish_Plan_u_list,ST_Selfish_Plan_u_list, LT_Synergistic_u_list,MT_Synergistic_u_list,ST_Synergistic_u_list, Q_LT_average_u_list, Q_MT_average_u_list, Q_ST_average_u_list = [],[],[],[],[],[],[],[],[],[],[],[]
 
@@ -193,9 +193,13 @@ global_trend_Greedy = get_trend(LT_Greedy_mean,MT_Greedy_mean,ST_Greedy_mean)
 global_trend_Selfish = get_trend(LT_Selfish_Plan_mean,MT_Selfish_Plan_mean,ST_Selfish_Plan_mean)
 global_trend_Synergistic = get_trend(LT_Synergistic_mean,MT_Synergistic_mean,ST_Synergistic_mean)
 
-#SD
+global_trend_Greedy_u = get_trend(LT_Greedy_u_mean,MT_Greedy_u_mean,ST_Greedy_u_mean)
+global_trend_Selfish_u = get_trend(LT_Selfish_Plan_u_mean,MT_Selfish_Plan_u_mean,ST_Selfish_Plan_u_mean)
+global_trend_Synergistic_u = get_trend(LT_Synergistic_u_mean,MT_Synergistic_u_mean,ST_Synergistic_u_mean)
+
+##report SD and mean
+#calculate SD
 print("greedy certain std:", global_trend_Greedy_std[-1])
-print("gre", global_trend_Greedy_std)
 print("selfish certain std:", global_trend_Selfish_std[-1])
 print("util certain std:", global_trend_Synergistic_std[-1])
 
@@ -203,44 +207,14 @@ print("greedy uncertain std:", global_trend_Greedy_u_std[-1])
 print("selfish ununcertain std:", global_trend_Selfish_u_std[-1])
 print("util uncertain std:", global_trend_Synergistic_std[-1])
 
-
-#mean
+#calculate mean
 print("certain greedy:", global_trend_Greedy[-1])
 print("certain selfish:", global_trend_Selfish[-1])
 print("certain util:", global_trend_Synergistic[-1])
 
-global_trend_Greedy_u = get_trend(LT_Greedy_u_mean,MT_Greedy_u_mean,ST_Greedy_u_mean)
-global_trend_Selfish_u = get_trend(LT_Selfish_Plan_u_mean,MT_Selfish_Plan_u_mean,ST_Selfish_Plan_u_mean)
-global_trend_Synergistic_u = get_trend(LT_Synergistic_u_mean,MT_Synergistic_u_mean,ST_Synergistic_u_mean)
-
 print("uncertain greedy:", global_trend_Greedy_u[-1])
 print("uncertain selfish:", global_trend_Selfish_u[-1])
 print("uncertain util:", global_trend_Synergistic_u[-1])
-'''
-plt.hist(global_trend_Greedy_u)
-plt.show()
-plt.hist(global_trend_Greedy)
-plt.show()
-
-plt.hist(global_trend_Selfish_u)
-plt.show()
-plt.hist(global_trend_Selfish)
-plt.show()
-
-plt.hist(global_trend_Synergistic_u)
-plt.show()
-plt.hist(global_trend_Synergistic)
-plt.show()
-'''
-
-t_test_greedy = stats.ttest_ind(global_trend_Greedy, global_trend_Greedy_u)
-print("t-test greedy", t_test_greedy)
-
-t_test_selfish = stats.ttest_ind(global_trend_Selfish, global_trend_Selfish_u)
-print("t-test selfish", t_test_selfish)
-
-t_test_util = stats.ttest_ind(global_trend_Synergistic, global_trend_Synergistic_u)
-print("t-test util", t_test_util)
 
 #ALL Policies certain
 plt.figure(figsize=(10,8))
@@ -248,19 +222,6 @@ plt.plot(years_array,global_trend_Greedy)
 plt.plot(years_array,global_trend_Selfish)
 plt.plot(years_array,global_trend_Synergistic)
 plt.plot(years_array,global_trend_Real)
-
-std_upper_synergistic, std_lower_synergistic = global_trend_Synergistic+(np.insert(global_trend_Synergistic_std, 0, 0)*2), global_trend_Synergistic-(np.insert(global_trend_Synergistic_std, 0, 0)*2)
-std_upper_selfish, std_lower_selfish = global_trend_Selfish+(np.insert(global_trend_Selfish_std, 0, 0)*2), global_trend_Selfish-(np.insert(global_trend_Selfish_std, 0, 0)*2)
-std_upper_greedy, std_lower_greedy = global_trend_Greedy+(global_trend_Greedy_std*2), global_trend_Greedy-(global_trend_Greedy_std*2)
-
-
-plt.fill_between(years_array,std_upper_synergistic, std_lower_synergistic,
-                 color='gray', alpha=0.2)
-plt.fill_between(years_array,std_upper_selfish, std_lower_selfish,
-                 color='gray', alpha=0.2)
-plt.fill_between(years_array,std_upper_greedy, std_lower_greedy,
-                 color='gray', alpha=0.2)
-
 
 plt.xlabel('Years', fontsize=17)
 plt.ylabel('CO2 Emission', fontsize=17)
@@ -276,24 +237,13 @@ plt.plot(years_array,global_trend_Selfish_u)
 plt.plot(years_array,global_trend_Synergistic_u)
 plt.plot(years_array,global_trend_Real)
 
-std_upper_u_synergistic, std_lower_u_synergistic = global_trend_Synergistic_u+(np.insert(global_trend_Synergistic_u_std, 0, 0)*2), global_trend_Synergistic_u-(np.insert(global_trend_Synergistic_u_std, 0, 0)*2)
-std_upper_u_selfish, std_lower_u_selfish = global_trend_Selfish_u+(np.insert(global_trend_Selfish_u_std, 0, 0)*2), global_trend_Selfish_u-(np.insert(global_trend_Selfish_u_std, 0, 0)*2)
-std_upper_u_greedy, std_lower_u_greedy = global_trend_Greedy_u+(global_trend_Greedy_u_std*2), global_trend_Greedy_u-(global_trend_Greedy_u_std*2)
-
-plt.fill_between(years_array,std_upper_u_synergistic, std_lower_u_synergistic,
-                 color='gray', alpha=0.2)
-plt.fill_between(years_array,std_upper_u_selfish, std_lower_u_selfish,
-                 color='gray', alpha=0.2)
-plt.fill_between(years_array,std_upper_u_greedy, std_lower_u_greedy,
-                 color='gray', alpha=0.2)
-
 plt.xlabel('Years', fontsize=17)
 plt.ylabel('CO2 Emission', fontsize=17)
 plt.legend(['Greedy','Selfish','Utilitarian','Empirical data'],fontsize=15)
 plt.title("Uncertain environment", fontsize=20)
 plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/environment_uncertain.png')
 
-#Mean of uncertainty and certainty
+#Plotting the mean of uncertainty and certainty
 data_certain = np.array([global_trend_Greedy, global_trend_Selfish, global_trend_Synergistic])
 all_policies_certain = np.average(data_certain, axis=0)
 print("average certain",all_policies_certain[-1])
@@ -302,31 +252,10 @@ data_uncertain = np.array([global_trend_Greedy_u, global_trend_Selfish_u, global
 all_policies_uncertain = np.average(data_uncertain, axis=0)
 print("average uncertain",all_policies_uncertain[-1])
 
-
-####TTEST#####
-t_test_certainty = stats.ttest_ind(all_policies_certain, all_policies_uncertain)
-print("ttest certainty", t_test_certainty)
-
-
 plt.figure(figsize=(10,8))
 plt.plot(years_array,all_policies_uncertain)
 plt.plot(years_array,all_policies_certain)
 plt.plot(years_array,global_trend_Real)
-
-std_upper_uncertain = all_policies_uncertain+all_policies_uncertainty_std
-std_lower_uncertain = all_policies_uncertain-all_policies_uncertainty_std
-
-std_upper_certain = all_policies_certain+all_policies_certainty_std
-std_lower_certain = all_policies_certain-all_policies_certainty_std
-
-
-plt.fill_between(years_array,std_upper_uncertain, std_lower_uncertain,
-                 color='gray', alpha=0.2)
-
-plt.fill_between(years_array,std_upper_certain, std_lower_certain,
-                 color='gray', alpha=0.2)
-
-#add legends
 plt.xlabel('Years', fontsize=17)
 plt.ylabel('CO2 Emission', fontsize=17)
 plt.legend(['Uncertain (average)', 'Certain (average)','Empirical data'], fontsize=15)
@@ -338,29 +267,130 @@ plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/comparison
 plt.figure(figsize=(10,8))
 epochs = range(0,len(Q_LT_average_mean))
 plt.axis([0, 40, 0, 0.003])
-plt.plot(epochs, Q_LT_average_mean)
-plt.plot(epochs, Q_MT_average_mean)
-plt.plot(epochs, Q_ST_average_mean)
-
-#add legends
+plt.plot(epochs, Q_LT_average_mean, color='purple')
+plt.plot(epochs, Q_MT_average_mean, color='orange')
+plt.plot(epochs, Q_ST_average_mean, color='green')
 plt.xlabel('Epochs', fontsize=17)
 plt.ylabel('Average Q-value', fontsize=17)
 plt.legend(['Average Q-values for LT', 'Average Q-values for MT','Average Q-values for ST'], fontsize=15)
 plt.title("Learning over epochs, Certain environment", fontsize=20)
 plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/learning_over_epochs_certain.png')
 
-##Certain learning
+##Uncertain learning
 #plotting average Q-value over epochs
 plt.figure(figsize=(10,8))
 epochs = range(0,len(Q_LT_average_mean))
-plt.plot(epochs, Q_LT_average_u_mean)
-plt.plot(epochs, Q_MT_average_u_mean)
-plt.plot(epochs, Q_ST_average_u_mean)
+plt.plot(epochs, Q_LT_average_u_mean, color = 'purple')
+plt.plot(epochs, Q_MT_average_u_mean, color = 'orange')
+plt.plot(epochs, Q_ST_average_u_mean, color = 'green')
 plt.axis([0, 40, 0, 0.003])
-
-#add legends
 plt.xlabel('Epochs', fontsize=17)
 plt.ylabel('Average Q-value', fontsize=17)
 plt.legend(['Average Q-values for LT', 'Average Q-values for MT','Average Q-values for ST'], fontsize=15)
 plt.title("Learning over epochs, Uncertain environment", fontsize=20)
 plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/learning_over_epochs_uncertain.png')
+
+
+#######################T-TEST###########################
+
+#Greedy
+Greedy_data_trend = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Greedy_list, MT_Greedy_list, ST_Greedy_list)]
+global_state_greedy = np.array([i[-1] for i in Greedy_data_trend])
+log_global_state_greedy = np.log(global_state_greedy)
+
+
+Greedy_data_trend_u = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Greedy_u_list, MT_Greedy_u_list, ST_Greedy_u_list)]
+global_state_greedy_u = np.array([i[-1] for i in Greedy_data_trend_u])
+log_global_state_greedy_u = np.log(global_state_greedy_u)
+
+t_test_greedy = stats.ttest_ind(log_global_state_greedy, log_global_state_greedy_u)
+print("t-test greedy", t_test_greedy)
+
+#Selfish
+Selfish_data_trend = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Selfish_Plan_list, MT_Selfish_Plan_list, ST_Selfish_Plan_list)]
+global_state_selfish = np.array([i[-1] for i in Selfish_data_trend])
+log_global_state_selfish = np.log(global_state_selfish)
+
+
+Selfish_data_trend_u = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Selfish_Plan_u_list, MT_Selfish_Plan_u_list, ST_Selfish_Plan_u_list)]
+global_state_selfish_u = np.array([i[-1] for i in Selfish_data_trend_u])
+log_global_state_selfish_u = np.log(global_state_selfish_u)
+
+
+t_test_selfish = stats.ttest_ind(log_global_state_selfish, log_global_state_selfish_u)
+print("t-test selfish", t_test_selfish)
+
+#Synergistic
+Synergistic_data_trend = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Synergistic_list, MT_Synergistic_list, ST_Synergistic_list)]
+global_state_Synergistic = np.array([i[-1] for i in Synergistic_data_trend])
+log_global_state_Synergistic = np.log(global_state_Synergistic)
+
+
+Synergistic_data_trend_u = [get_trend(i[0], i[1], i[2]) for i in zip(LT_Synergistic_u_list, MT_Synergistic_u_list, ST_Synergistic_u_list)]
+global_state_Synergistic_u = np.array([i[-1] for i in Synergistic_data_trend_u])
+log_global_state_Synergistic_u = np.log(global_state_Synergistic_u)
+
+
+t_test_util = stats.ttest_ind(log_global_state_Synergistic, log_global_state_Synergistic_u)
+print("t-test util", t_test_util)
+
+#Overall
+all_policies_certain = np.array([Greedy_data_trend, Selfish_data_trend, Synergistic_data_trend])
+all_policies_certain_mean = np.average(all_policies_certain, axis=0)
+all_policies_certain_trend = np.array([i[-1] for i in all_policies_certain_mean])
+log_all_policies_certain_trend = np.log(all_policies_certain_trend)
+
+all_policies_uncertain = np.array([Greedy_data_trend_u, Selfish_data_trend_u, Synergistic_data_trend_u])
+all_policies_uncertain_mean = np.average(all_policies_uncertain, axis=0)
+all_policies_uncertain_trend = np.array([i[-1] for i in all_policies_uncertain_mean])
+log_all_policies_uncertain_trend = np.log(all_policies_uncertain_trend)
+
+t_test_certainty = stats.ttest_ind(log_all_policies_certain_trend, log_all_policies_uncertain_trend)
+print("ttest certainty", t_test_certainty)
+
+#Histogram: Overall Uncertainty/Certainty 
+plt.figure(figsize=(10,8))
+plt.hist(log_all_policies_certain_trend)
+plt.title("Histogram of Global End-States, Certain environment: Overall", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_certain.png')
+
+plt.figure(figsize=(10,8))
+plt.hist(log_all_policies_uncertain_trend)
+plt.title("Histogram of Global End-States, Uncertain environment: Overall", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_uncertain.png')
+
+#Histogram: Greed
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_greedy)
+plt.title("Histogram of Global End-States, Certain environment: Greedy Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_certain_greed.png')
+
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_greedy_u)
+plt.title("Histogram of Global End-States, Uncertain environment: Greedy Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_uncertain_greed.png')
+
+#Histogram: Synergistic
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_Synergistic)
+plt.title("Histogram of Global End-States, Certain environment: Utilitarian Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_certain_utilitarian.png')
+
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_Synergistic_u)
+plt.title("Histogram of Global End-States, Uncertain environment: Utilitarian Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_uncertain_utilitarian.png')
+
+#Histogram: Selfish Planning
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_selfish)
+plt.title("Histogram of Global End-States, Certain environment: Selfish Planning Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_certain_selfish.png')
+
+plt.figure(figsize=(10,8))
+plt.hist(log_global_state_selfish_u)
+plt.title("Histogram of Global End-States, Uncertain environment: Selfish Planning Policy", fontsize=20)
+plt.savefig('Reducing-the-Global-Carbon-Footprint-based-on-MARL/plots/hist_global_states_uncertain_selfish.png')
+
+
+
